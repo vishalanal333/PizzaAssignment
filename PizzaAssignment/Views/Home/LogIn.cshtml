@@ -1,0 +1,38 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>LogIn</title>
+    <link href="~/lib/twitter-bootstrap/css/bootstrap.css" rel="stylesheet" />
+    <link href="~/css/Site.css" rel="stylesheet" />
+</head>
+<body>
+
+
+    <div class="container">
+        <h4>SignIn with</h4>
+        <hr />
+        <div class="row">
+            <div class="col-md-4">
+                <div class="col-md-4">
+                    <a asp-controller="Account" asp-action="GoogleLogin"  class="btn btn-outline-primary">Google</a>
+                </div>
+                <div class="col-md-4">
+                    <a asp-controller="Account" asp-action="FacebookLogin"  class="btn btn-outline-primary">Facebook</a>
+                </div>
+            </div>
+            <div class="col-md-8">
+                <img class="img-fluid" src="~/images/signin.jpg" />
+            </div>
+        </div>
+    </div>
+
+
+
+</body>
+</html>

@@ -1,0 +1,154 @@
+﻿
+@model PizzaModel
+
+    
+
+<section class="jumbotron ">
+    <div class="container">
+        <h1 class="text-center">Welcome to PizzaWorld</h1><br><br>
+
+        <div id="cartAlert" class="alert alert-primary" role="alert">
+            Please choose Pizza size and topping both.
+        </div>
+        <div id="deliveryAlert" class="alert alert-primary" role="alert">
+            Please choose a Pizza...
+        </div>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Sr. No.</th>
+                    <th>Size</th>
+                    <th>Topings</th>
+                    <th>Price</th>
+                    <th id="remove">Remove</th>
+                </tr>
+            </thead>
+            <tbody id="cart"></tbody>
+        </table>
+        <p>
+            <label id="TotalPrice" class="btn btn-primary my-2">TOTAL PRICE:</label>
+        </p>
+        <br><br>
+        <form id="pizzaForm">
+            <div class="form-group">
+                <select name="PizzaSize" id="PizzaSize" onchange="calculatePrice(this)" class="form-control">
+                    <option value="">Please choose your Pizza Size</option>
+                    <option value="Small">Small(₹50)</option>
+                    <option value="Medium">Medium(₹100)</option>
+                    <option value="Large">Large(₹150)</option>
+                </select>
+            </div><br><br><br><br>
+            <h1>Select Topings:</h1>
+
+            <div>
+                <input type="checkbox" id="Cheese" name="PizzaToping[]" value="Cheese" onchange="calculatePrice(this)">
+                <label for="Cheese">Cheese(₹40)</label><br>
+                <input type="checkbox" id="Pepperoni" name="PizzaToping[]" value="Pepperoni" onchange="calculatePrice(this)">
+                <label for="Pepperoni">Pepperoni(₹60)</label><br>
+                <input type="checkbox" id="Artichoke" name="PizzaToping[]" value="Artichoke" onchange="calculatePrice(this)">
+                <label for="Artichoke">Artichoke(₹60)</label><br>
+                <input type="checkbox" id="Anchovy" name="PizzaToping[]" value="Anchovy" onchange="calculatePrice(this)">
+                <label for="Anchovy">Anchovy(₹60)</label><br><br>
+            </div>
+            <p>
+                <label id="lblPrice" class="btn btn-primary my-2">Price</label>
+            </p>
+            <p>
+                <label onclick="addToCart(this)" name="Add to Cart" class="btn btn-primary my-2">ADD TO CART</label>
+            </p>
+            <label for="deliveryAddress">Enter Delivery Address:</label><br>
+            <input type="text" id="deliveryAddress" name="deliveryAddress" >
+            <p>
+                <label onclick="DeliveryOn(this)" name="Delivery" class="btn btn-primary my-2">Delivery</label>
+            </p>
+
+        </form>
+        <div id="confirmationMessage" class="text-center">
+            <h1>Your order is confirmed.</h1><br>
+            <h1>Thanks For Ordering!!</h1>
+        </div>
+
+    </div>
+
+</section>
+@section scripts{
+    <script>
+        let cart = [];
+        $('.table').hide();
+        $('#cartAlert').hide();
+        $('#deliveryAlert').hide();
+        $('#TotalPrice').hide();
+        $('#confirmationMessage').hide();
+
+        function calculatePrice(selected) {
+            $.ajax({
+                url: "/Pizza/calculatePrice",
+                method: "POST",
+                data: $('form').serialize(),
+                success: function (data) {
+                    $("#lblPrice").text("Price: ₹" + data);
+                },
+            })
+        }
+
+        function createListing() {
+             $('.table').hide();
+            $('#TotalPrice').hide();
+            let totalPrice = 0;
+            let cartHtml = '';
+            cart.forEach((ca, i) => {
+                {
+                    cartHtml += `<tr> <td>${i + 1}</td> <td>${ca.size}</td> <td>${ca.topings}</td>  <td>${ca.price}</td> <td><button class="CartDelete" type="button" onclick=removeFromCart(${i})>Delete</button></td></tr>`;
+                    totalPrice += ca.price;
+                }
+            });
+            $('#TotalPrice').text("TOTAL PRICE: ₹" + totalPrice)
+            document.getElementById('cart').innerHTML = cartHtml;
+            if (cart.length != 0) {
+                $('.table').show();
+            }
+            if (totalPrice != 0) {
+                $('#TotalPrice').show();
+            }
+        }
+
+        function addToCart(selected) {
+            $('#cartAlert').hide();
+            $('#deliveryAlert').hide();
+            $.ajax({
+                url: "/Pizza/AddToCart",
+                method: "POST",
+                data: $('form').serialize(),
+                success: function (data) {
+                    if (!data || data == '') {
+                        $('#cartAlert').show();
+                        return;
+                    }
+
+                    cart.push(data);
+                    createListing();
+                    $('#pizzaForm')[0].reset();
+                    $('#lblPrice').text("Price");
+                }
+            })
+
+        }
+
+        function removeFromCart(i) {
+            cart.splice(i, 1);
+            createListing();
+        }
+
+        function DeliveryOn(selected) {
+            if (cart.length != 0) {
+                $('#pizzaForm').hide();
+                $('#remove').hide();
+                $('.CartDelete').hide();
+
+                $('#confirmationMessage').show();
+            }
+            else
+                $('#deliveryAlert').show();          
+        }
+    </script>
+}
