@@ -18,24 +18,7 @@ namespace PizzaAssignment
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
-            services.AddAuthentication(options =>
-            {
-                options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-            })
-           .AddCookie(options =>
-           {
-               options.LoginPath = "/account/google-login"; // Must be lowercase
-           })
-            .AddGoogle(googleOptions =>
-            {
-                googleOptions.ClientId = "845892227092-i1e0us9o185htf8hagpknqvfikinp2s1.apps.googleusercontent.com";
-                googleOptions.ClientSecret = "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";
-            })
-            .AddFacebook(fbOptions =>
-            {
-                fbOptions.AppId = "5187185601330448";
-                fbOptions.AppSecret = "b531db78e5ab669b3f8f693ca965956c";
-            });
+            
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

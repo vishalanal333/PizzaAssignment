@@ -6,7 +6,6 @@ using System.Collections.Generic;
 
 namespace PizzaAssignment.Controllers
 {
-    [Authorize]
     public class PizzaController : Controller
     {
         Dictionary<string, int> topingData = new Dictionary<string, int>() {

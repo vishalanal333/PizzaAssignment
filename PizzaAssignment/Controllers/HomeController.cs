@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 
 namespace PizzaAssignment.Controllers
 {
-    [AllowAnonymous]
     public class HomeController : Controller
     {
         [ViewData]
